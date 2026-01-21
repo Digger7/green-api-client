@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Тестовое задание на должность "Ведущий разработчик Golang, NoteJS"</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f6f6f6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .left-panel {
+            width: 350px;
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .right-panel {
+            flex: 1;
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+
+        .field {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        textarea.field {
+            height: 80px;
+            resize: vertical;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            background: #eaeaea;
+            border: 1px solid #aaa;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin: 10px 0 5px;
+        }
+
+        .response-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .response-box {
+            width: 100%;
+            height: calc(100% - 40px);
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-sizing: border-box;
+            font-family: Consolas, monospace;
+            white-space: pre;
+            overflow: auto;
+            background: #fafafa;
+        }
+    </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="left-panel">
+                <input id="idInstance" type="text" class="field" placeholder="IdInstance">
+                <input id="apiTokenInstance" type="text" class="field" placeholder="ApiTokenInstance">
+
+                <button id="getSettingsBtn" class="btn">getSettings</button>
+                <button id="getStateInstanceBtn" class="btn">getStateInstance</button>
+
+                <div class="section-title">Send Message</div>
+                <input id="chatId" type="text" class="field" placeholder="77771234567">
+                <textarea id="message" class="field">Hello World!</textarea>
+                <button id="sendMessageBtn" class="btn">sendMessage</button>
+
+                <div class="section-title">Send File by URL</div>
+                <input id="sendFileChatId" type="text" class="field" placeholder="77771234567">
+                <input id="urlFile" type="text" class="field" placeholder="urlFile" value="https://avatars.mds.yandex.net/get-pdb/477388/77f64197-87d2-42cf-9305-14f49c65f1da/s375">
+                <button id="sendFileByUrlBtn" class="btn">sendFileByUrl</button>
+            </div>
+            <div class="right-panel">
+                <div class="response-title">Ответ:</div>
+                <div class="response-box"/>
+            </div>
+        </div>
+        <script>
+            const responseBox = document.querySelector('.response-box');
+            const fields = document.querySelectorAll('.field');
+
+            function getIdAndToken() {
+                const idInstance = document.getElementById('idInstance').value.trim();
+                const apiTokenInstance = document.getElementById('apiTokenInstance').value.trim();
+                return { idInstance, apiTokenInstance };
+            }
+
+            async function getSettings() {
+                const { idInstance, apiTokenInstance } = getIdAndToken();
+                const url = `/getSettings?id=${idInstance}&token=${apiTokenInstance}`;
+
+                try {
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    responseBox.textContent = JSON.stringify(data, null, 2);
+                } catch (e) {
+                    responseBox.textContent = 'Ошибка: ' + e.message;
+                }
+            }
+
+            async function getStateInstance() {
+                const { idInstance, apiTokenInstance } = getIdAndToken();
+                const url = `/getStateInstance?id=${idInstance}&token=${apiTokenInstance}`;
+
+                try {
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    responseBox.textContent = JSON.stringify(data, null, 2);
+                } catch (e) {
+                    responseBox.textContent = 'Ошибка: ' + e.message;
+                }
+            }
+
+            async function sendMessage() {
+                const { idInstance, apiTokenInstance } = getIdAndToken();
+                const chatId = document.getElementById('chatId').value;
+                const message = document.getElementById('message').value;
+                
+                const url = `/sendMessage?id=${idInstance}&token=${apiTokenInstance}`;
+
+                try {
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ chatId, message })
+                    });
+                    const data = await res.json();
+                    responseBox.textContent = JSON.stringify(data, null, 2);
+                } catch (e) {
+                    responseBox.textContent = 'Ошибка: ' + e.message;
+                }
+            }
+
+            async function sendFileByUrl() {
+                const { idInstance, apiTokenInstance } = getIdAndToken();
+                const chatId = document.getElementById('sendFileChatId').value;
+                const urlFile = document.getElementById('urlFile').value;
+                
+                const url = `/sendFileByUrl?id=${idInstance}&token=${apiTokenInstance}`;
+
+                try {
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ chatId, urlFile, fileName: 'image.png',  caption: 'изображение'})
+                    });
+                    const data = await res.json();
+                    responseBox.textContent = JSON.stringify(data, null, 2);
+                } catch (e) {
+                    responseBox.textContent = 'Ошибка: ' + e.message;
+                }
+            }
+
+            document.getElementById('getSettingsBtn').addEventListener('click', getSettings);
+            document.getElementById('getStateInstanceBtn').addEventListener('click', getStateInstance);
+            document.getElementById('sendMessageBtn').addEventListener('click', sendMessage);
+            document.getElementById('sendFileByUrlBtn').addEventListener('click', sendFileByUrl);
+        </script>
+    </body>
+</html>
