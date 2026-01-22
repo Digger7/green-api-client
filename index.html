@@ -74,6 +74,13 @@
                 overflow: auto;
                 background: #fafafa;
             }
+
+            .footer {
+                margin-top: 20px;
+                text-align: right;
+                font-size: 14px;
+                color: #555;
+            }
         </style>
     </head>
     <body>
@@ -94,12 +101,17 @@
                 <input id="sendFileChatId" type="text" class="field" placeholder="77771234567">
                 <input id="urlFile" type="text" class="field" placeholder="urlFile" value="https://avatars.mds.yandex.net/get-pdb/477388/77f64197-87d2-42cf-9305-14f49c65f1da/s375">
                 <button id="sendFileByUrlBtn" class="btn">sendFileByUrl</button>
+
+                <div class="footer">
+                    created by <a href="https://github.com/Digger7/green-api-client" target="_blank">digger</a>
+                </div>
             </div>
             <div class="right-panel">
                 <div class="response-title">Ответ:</div>
                 <div class="response-box"/>
             </div>
         </div>
+
         <script>
             const responseBox = document.querySelector('.response-box');
             const fields = document.querySelectorAll('.field');
